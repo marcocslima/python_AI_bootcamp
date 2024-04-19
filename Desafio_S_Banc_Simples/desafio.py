@@ -9,7 +9,8 @@ Digite a opção desejada:
 4 - Cadastrar usuário
 5 - Listar usuários
 6 - Cadastrar conta
-7 - Sair do sistema
+7 - Listar contas
+8 - Sair do sistema
 
 '''
 
@@ -46,8 +47,12 @@ estados_brasileiros = [
 saldo = 0
 historico_operacoes = []
 usuarios = []
+contas = []
 NUM_MAX_SAQUES_DIA = 3
 LIMITE_SAQUE = 500
+
+def limpar_numeros(texto):
+    return ''.join(caractere for caractere in texto if caractere.isdigit())
 
 def registro(operacao, valor):
     data_hora = datetime.datetime.now()
@@ -98,8 +103,8 @@ def criar_usuario(*, nome, data_nascimento, cpf, endereco):
     return usuario
 
 def listar_usuarios():
-    for u in usuarios:
-        print(u)
+    for usuario in usuarios:
+        print(usuario)
 
 def montar_endereco(*, logradouro, numero, bairro, cidade, estado):
     endereco = f'{logradouro}, {numero} - {bairro}, {cidade} - {estado}'
@@ -113,6 +118,22 @@ def verifica_sigla_estados(sigla):
           continue
       else:
         return sigla.upper()
+      
+def criar_conta(cpf):
+    if len(usuarios) == 0:
+      print('Nenhum usuário cadastrado')
+    else:
+      for usuario in usuarios:
+          if limpar_numeros(cpf) == limpar_numeros(usuario['cpf']):
+            contas.append(dict(agencia='0001', conta=len(contas)+1, usuario=usuario))
+            print('Conta criada com sucesso')
+          else:
+            print('CPF não encontrado')
+            break
+
+def listar_contas():
+    for conta in contas:
+        print(conta)
 
 while True:
     opcao = int(input(menu))
@@ -141,7 +162,11 @@ while True:
         print(usuario)
     elif opcao == 5:
         listar_usuarios()
+    elif opcao == 6:
+        criar_conta(input('Digite o CPF do usuário: '))
     elif opcao == 7:
+        listar_contas()
+    elif opcao == 8:
         print('Saindo do sistema')
         break
     else:

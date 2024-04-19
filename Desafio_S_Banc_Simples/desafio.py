@@ -106,10 +106,13 @@ def montar_endereco(*, logradouro, numero, bairro, cidade, estado):
     return endereco
 
 def verifica_sigla_estados(sigla):
-    if sigla not in estados_brasileiros:
-        print('Sigla de estado inválida')
-        return False
-    return True
+    while True:
+      if sigla.upper() not in estados_brasileiros:
+          print('Sigla de estado inválida')
+          sigla = input('Digite uma sigla de estado válida: ')
+          continue
+      else:
+        return sigla.upper()
 
 while True:
     opcao = int(input(menu))
@@ -131,14 +134,7 @@ while True:
         numero=input('Digite o número: ')
         bairro=input('Digite o bairro: ')
         cidade=input('Digite a cidade: ')
-        while True:
-            sigla = input('Digite a sigla estado: ')
-            if verifica_sigla_estados(sigla):
-              estado=sigla 
-              break
-            else:
-              print('Digite uma sigla de estado válida!!!')
-              continue
+        estado=verifica_sigla_estados(input('Digite a sigla estado: '))
         endereco = montar_endereco(logradouro=logradouro, numero=numero, bairro=bairro, cidade=cidade, estado=estado)
         usuario = criar_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
         usuarios.append(usuario)

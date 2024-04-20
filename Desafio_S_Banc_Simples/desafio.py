@@ -100,9 +100,24 @@ def criar_usuario(*, nome, data_nascimento, cpf, endereco):
         'cpf': cpf,
         'endereco': endereco,
     }
-    return usuario
+    if any(valor == '' for valor in usuario.values()):
+      print("\nExistem valores vazios ou não válidos.")
+      return False
+    else:
+      return usuario
+
+def verifica_usuario(cpf):
+    for usuario in usuarios:
+        if limpar_numeros(cpf) == limpar_numeros(usuario['cpf']):
+          print('Usuário já cadastrado')
+          return False
+        else:
+          return True
 
 def listar_usuarios():
+    if len(usuarios) == 0:
+      print('Nenhum usuário cadastrado')
+      return
     for usuario in usuarios:
         print(usuario)
 
@@ -128,10 +143,11 @@ def criar_conta(cpf):
             contas.append(dict(agencia='0001', conta=len(contas)+1, usuario=usuario))
             print('Conta criada com sucesso')
           else:
-            print('CPF não encontrado')
-            break
+            continue
 
 def listar_contas():
+    if len(contas) == 0:
+      print('Nenhuma conta cadastrada')
     for conta in contas:
         print(conta)
 
@@ -151,13 +167,17 @@ while True:
         nome = input('Digite o nome: ')
         data_nascimento = input('Digite a data de nascimento: ')
         cpf = input('Digite o CPF: ')
-        logradouro=input('Digite o logradouro: ')
-        numero=input('Digite o número: ')
-        bairro=input('Digite o bairro: ')
-        cidade=input('Digite a cidade: ')
-        estado=verifica_sigla_estados(input('Digite a sigla estado: '))
+        if verifica_usuario(cpf) == False:
+          continue
+        logradouro = input('Digite o logradouro: ')
+        numero = input('Digite o número: ')
+        bairro = input('Digite o bairro: ')
+        cidade = input('Digite a cidade: ')
+        estado = verifica_sigla_estados(input('Digite a sigla estado: '))
         endereco = montar_endereco(logradouro=logradouro, numero=numero, bairro=bairro, cidade=cidade, estado=estado)
         usuario = criar_usuario(nome=nome, data_nascimento=data_nascimento, cpf=cpf, endereco=endereco)
+        if usuario == False:
+          continue
         usuarios.append(usuario)
         print(usuario)
     elif opcao == 5:
